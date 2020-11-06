@@ -1248,6 +1248,9 @@ class TestEagerModeOps(QuantizationTestCase):
     def test_leaky_relu(self):
         self._test_activation_op_impl(nn.LeakyReLU, nnq.LeakyReLU, {'negative_slope': 0.1, 'inplace': False})
 
+    def test_relu(self):
+        self._test_activation_op_impl(nn.ReLU, nn.ReLU, {'inplace': False})
+
 
 class TestEagerModeQATOps(QuantizationTestCase):
     def _test_activation_impl(self, Act, data):
@@ -1320,6 +1323,25 @@ class TestEagerModeQATOps(QuantizationTestCase):
         checkNoFQModule(m)
         m = convert(m)
         checkNoFQModule(m)
+
+    def test_relu(self):
+        class M(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.relu = nn.ReLU()
+
+            def forward(self, x):
+                x = self.relu(x)
+                return x
+
+        m = M().train()
+        m.qconfig = default_qconfig
+        m = prepare_qat(m)
+        # make sure no activation_post_process is inserted for relu
+        self.assertFalse(hasattr(m, "activation_post_process"))
+        m = convert(m)
+        # make sure ReLU module is not changed
+        self.assertTrue(type(m.relu), nn.ReLU)
 
 class TestFunctionalModule(QuantizationTestCase):
     # Histogram Observers are slow, so have no-deadline to ensure test doesn't time out
