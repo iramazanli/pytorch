@@ -2398,6 +2398,8 @@ op_db: List[OpInfo] = [
                         dtypes=all_types_and_complex_and(torch.bool, torch.float16, torch.bfloat16)),
            ),
            sample_inputs_func=sample_inputs_unfold),
+
+           ddd
     OpInfo('vstack',
            # gradcheck expects the input arguments as a flat list
            op=lambda *args: torch.vstack([*args]),
