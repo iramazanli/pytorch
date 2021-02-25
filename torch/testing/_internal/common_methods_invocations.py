@@ -2400,6 +2400,7 @@ op_db: List[OpInfo] = [
            sample_inputs_func=sample_inputs_unfold),
 
            ddd
+           ttt
     OpInfo('vstack',
            # gradcheck expects the input arguments as a flat list
            op=lambda *args: torch.vstack([*args]),
