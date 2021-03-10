@@ -1454,8 +1454,6 @@ def sample_inputs_polar(op_info, device, dtype, requires_grad):
 
     return samples
 
-<<<<<<< HEAD
-
 def sample_inputs_cumsum(op_info, device, dtype, requires_grad):
     def _make_tensor_helper(shape, low=None, high=None):
         return make_tensor(shape, device, dtype, low=low, high=high, requires_grad=requires_grad)
@@ -1470,7 +1468,7 @@ def sample_inputs_cumsum(op_info, device, dtype, requires_grad):
     )
 
     return samples
-=======
+
 def sample_inputs_unfold(op_info, device, dtype, requires_grad):
     test_cases = (
         ((), (0, 1, 1)),
@@ -1504,7 +1502,6 @@ def sample_inputs_unfold(op_info, device, dtype, requires_grad):
                                       requires_grad=requires_grad),
                                       args=arguments)]
     return sample_inputs
->>>>>>> c31542f078 (add test cases for complex supporting unfold)
 
 # Operator database (sorted alphabetically)
 op_db: List[OpInfo] = [
@@ -2852,7 +2849,8 @@ op_db: List[OpInfo] = [
            op=lambda x, *args: x.unfold(*args),
            dtypes=all_types_and_complex_and(torch.bool, torch.float16, torch.bfloat16),
            test_inplace_grad=False,
-           supports_tensor_out=False,
+           supports_out=False,
+           check_batched_gradgrad=False,
            skips=(
                # torch.unfold does not exist so we get a RuntimeError.
                SkipInfo('TestCommon', 'test_variant_consistency_jit',
